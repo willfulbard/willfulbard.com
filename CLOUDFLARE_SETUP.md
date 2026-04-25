@@ -11,8 +11,6 @@ Cloudflare Pages will:
 - Handle TLS automatically
 - Cost nothing (free tier)
 
-This replaces the need for self-hosted hosting and the existing `peaceiris/actions-gh-pages` workflow that pushes to a `deploy` branch.
-
 ---
 
 ## Prerequisites
@@ -139,7 +137,7 @@ This is the simplest setup that works with what you already have.
 5. In your GitHub repo → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
    - Name: `CLOUDFLARE_DEPLOY_HOOK`
    - Value: paste the deploy hook URL
-6. Replace `.github/workflows/build-and-deploy.yml` with this minimal workflow:
+6. Create `.github/workflows/nightly-rebuild.yml` with this minimal workflow:
 
 ```yaml
 name: Trigger nightly Cloudflare Pages build
@@ -162,18 +160,6 @@ That's it — every night, GitHub fires a POST to Cloudflare which triggers a fr
 ### Option B — Cloudflare Workers Cron Trigger
 
 More elegant but requires writing a small Worker. Skip unless you're already comfortable with Workers.
-
----
-
-## Step 7 — Disable the old `peaceiris/actions-gh-pages` workflow
-
-The old workflow pushed builds to a `deploy` branch for self-hosting. It's no longer needed — Cloudflare Pages handles building and deploying directly.
-
-If you're using Option A in Step 6, you've already replaced the workflow file with the trigger-only version.
-
-If you skipped Step 6, just delete `.github/workflows/build-and-deploy.yml` (or comment it out) so it doesn't keep pushing to `deploy` unnecessarily.
-
-You can also disable GitHub Pages in the repo settings (**Settings** → **Pages** → set source to "None"), since Cloudflare Pages now serves the live site.
 
 ---
 

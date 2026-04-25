@@ -36,8 +36,7 @@ The dev server runs at `http://localhost:4321`.
 │   ├── lib/calendar.ts        Google Calendar integration
 │   └── styles/global.css      Theme tokens and base styles
 ├── public/                    Static assets (favicon, images)
-├── astro.config.mjs           Astro config
-└── .github/workflows/         GitHub Actions CI/CD
+└── astro.config.mjs           Astro config
 ```
 
 ## Calendar integration
@@ -54,12 +53,7 @@ Every event on the calendar appears on the site, so use this calendar exclusivel
 
 ## Deployment
 
-Builds run on GitHub Actions:
-- On push to `main`
-- Nightly at 6:00 AM UTC (picks up new calendar events)
-- On manual workflow dispatch
-
-The built site is force-pushed to the `deploy` branch as an orphan branch. The self-hosted server pulls from `deploy` to serve the site.
+Hosted on Cloudflare Pages, which auto-builds on every push to `main`. See [CLOUDFLARE_SETUP.md](CLOUDFLARE_SETUP.md) for setup instructions.
 
 ## TODO
 

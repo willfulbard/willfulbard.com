@@ -29,7 +29,7 @@ While Gatsby was the initial consideration, **Astro** is the stronger choice for
 
 Gatsby remains a solid choice if you have a strong preference for the React/GraphQL ecosystem. Either can produce an excellent result.
 
-**Hosting:** Self-hosted, deployed via GitHub Actions to an orphan branch (see [Build & Deployment](#build--deployment))
+**Hosting:** Cloudflare Pages (auto-builds on push to `main`); see [Build & Deployment](#build--deployment) and [CLOUDFLARE_SETUP.md](CLOUDFLARE_SETUP.md)
 
 ---
 
@@ -241,7 +241,7 @@ Before or during development, you'll need to provide:
 ### Phase 1 — Core Site (Launch)
 - Home, About, Events, Projects, Contact
 - Mobile-responsive
-- Deployed via GitHub Actions to self-hosted server on willfulbard.com
+- Deployed via Cloudflare Pages on willfulbard.com
 - Google Calendar integration for events
 - Basic SEO (title tags, meta descriptions, Open Graph)
 
@@ -261,11 +261,10 @@ Before or during development, you'll need to provide:
 ## Domain & Hosting
 
 - **Domain:** `willfulbard.com` (confirmed)
-- **Source code:** GitHub repository
-- **Build:** GitHub Actions (nightly + on-push)
-- **Deploy artifact:** Built site published to an orphan branch (e.g. `deploy`) in the same repo
-- **Hosting:** Self-hosted web server pulls from the orphan branch
-- **DNS:** Configured through domain registrar
+- **Source code:** GitHub repository (`willfulbard/willfulbard.com`)
+- **Build & hosting:** Cloudflare Pages (auto-builds on push to `main`)
+- **Nightly rebuild:** Optional GitHub Actions cron triggers a Cloudflare deploy hook (so calendar changes go live without a code push)
+- **DNS:** Managed through Cloudflare (or via CNAME from your registrar)
 
 See [Build & Deployment](#build--deployment) for full implementation details.
 
@@ -337,140 +336,13 @@ See `src/lib/calendar.ts` for the implementation. It uses the [`node-ical`](http
 
 ## Build & Deployment
 
-The site is built and deployed via GitHub Actions, with built output pushed to an orphan branch in the same repository for self-hosted serving.
+The site is hosted on **Cloudflare Pages**, which auto-builds and deploys on every push to `main`. Optionally, a GitHub Actions cron job triggers a Cloudflare deploy hook nightly so calendar updates flow through without code changes.
 
-### Repository Structure
-
-```
-willfulbard.com/                    (main branch — source code)
-├── src/
-├── public/
-├── astro.config.mjs
-├── package.json
-└── .github/workflows/
-    └── build-and-deploy.yml
-```
-
-### Branch Strategy
-
-- **`main`** — Astro source code, content, components, configuration
-- **`deploy`** (orphan branch) — Built static output (`dist/` contents); the web server pulls from here
-
-The `deploy` branch is an **orphan branch** — it has no commit history connecting it to `main`. This keeps the source-code git history clean and avoids bloating the repo with build artifacts.
-
-### Build Triggers
-
-The GitHub Actions workflow runs on:
-
-1. **Push to `main`** — immediate redeploy when source code or content changes
-2. **Nightly schedule** (cron) — picks up new calendar events without manual intervention
-3. **Manual trigger** (`workflow_dispatch`) — for ad-hoc rebuilds (e.g. just added a new gig and want it live now)
-
-### GitHub Actions Workflow
-
-`.github/workflows/build-and-deploy.yml`:
-
-```yaml
-name: Build and Deploy
-
-on:
-  push:
-    branches: [main]
-  schedule:
-    # Runs every night at 6:00 AM UTC (10:00 PM Pacific previous day)
-    - cron: '0 6 * * *'
-  workflow_dispatch:  # Allow manual trigger from GitHub UI
-
-jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write   # Required to push to the deploy branch
-    steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
-        env:
-          GOOGLE_CALENDAR_CREDENTIALS: ${{ secrets.GOOGLE_CALENDAR_CREDENTIALS }}
-          GOOGLE_CALENDAR_ID: ${{ secrets.GOOGLE_CALENDAR_ID }}
-        run: npm run build
-
-      - name: Deploy to orphan branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: deploy
-          force_orphan: true
-          commit_message: 'Deploy build from ${{ github.sha }}'
-```
-
-**Notes:**
-- `peaceiris/actions-gh-pages` is a popular, well-maintained action that handles orphan branch publishing cleanly.
-- `force_orphan: true` ensures every deploy creates a single-commit orphan branch (no history bloat).
-- Secrets are managed in the repo's GitHub Actions settings.
-
-### Required GitHub Secrets
-
-| Secret | Source |
-|---|---|
-| `GOOGLE_CALENDAR_CREDENTIALS` | Contents of the service account JSON key file |
-| `GOOGLE_CALENDAR_ID` | The calendar ID from Google Calendar settings (e.g. `abc123@group.calendar.google.com`) |
-
-`GITHUB_TOKEN` is provided automatically by GitHub Actions.
-
-### Self-Hosted Server Setup
-
-The web server needs to:
-
-1. Clone the repo (or `git fetch` periodically) and check out the `deploy` branch
-2. Serve the static files from that branch's working tree
-3. Ideally, auto-update on new pushes to `deploy`
-
-**Two common patterns:**
-
-**Pattern A — Cron-based pull:**
-A cron job runs every few minutes:
-
-```bash
-*/5 * * * * cd /var/www/willfulbard.com && git fetch origin deploy && git reset --hard origin/deploy
-```
-
-Simple, reliable, no webhooks. ~5-minute lag from deploy to live.
-
-**Pattern B — Webhook-triggered pull:**
-GitHub sends a webhook on push to `deploy`; a small server-side handler runs the same `git fetch / reset --hard`. Faster, but requires running a small webhook listener.
-
-**Recommendation:** Start with Pattern A. It's simpler and the 5-minute lag is fine for this site.
-
-### Domain & TLS
-
-- Point `willfulbard.com` (and `www.willfulbard.com`) to the self-hosted server's IP via DNS A/AAAA records
-- Use **Caddy** or **nginx + Let's Encrypt (certbot)** for automatic TLS — Caddy is simpler since it handles certificate provisioning and renewal automatically with no configuration
-
-### First-Time Setup Checklist
-
-- [ ] Create GitHub repository
-- [ ] Push initial Astro project to `main`
-- [ ] Create Google Cloud project; enable Calendar API; create service account; download JSON key
-- [ ] Share gig calendar with service account email (read-only)
-- [ ] Add `GOOGLE_CALENDAR_CREDENTIALS` and `GOOGLE_CALENDAR_ID` to GitHub Secrets
-- [ ] Add `.github/workflows/build-and-deploy.yml` to the repo
-- [ ] Trigger initial build (push to `main` or manual dispatch)
-- [ ] Verify `deploy` branch is created and populated
-- [ ] Set up self-hosted web server with cron pull from `deploy` branch
-- [ ] Configure DNS to point to web server
-- [ ] Set up TLS via Caddy or certbot
+See [CLOUDFLARE_SETUP.md](CLOUDFLARE_SETUP.md) for full setup instructions including:
+- Creating the Pages project
+- Configuring the build (`npm run build`, output `dist/`, Node 20)
+- Custom domain and TLS
+- Optional nightly rebuild trigger
 
 ---
 
