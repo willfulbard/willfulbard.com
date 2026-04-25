@@ -211,7 +211,7 @@ Inspired by the warmth and craft of the folk tradition — not rustic or kitschy
 | Newsletter | None planned (using Instagram for gig updates) |
 | Music embeds | Bandcamp player widget |
 | Video embeds | YouTube iframe |
-| Event calendar | Google Calendar API (private calendar, service account auth) — see [Calendar Integration](#calendar-integration) |
+| Event calendar | Public Google Calendar iCal feed parsed at build time — see [Calendar Integration](#calendar-integration) |
 | Analytics | Plausible or Fathom (privacy-respecting, simple) |
 | SEO | Astro's built-in meta tags + sitemap plugin |
 | Accessibility | Semantic HTML, `alt` text on all images, keyboard nav |
@@ -232,7 +232,7 @@ Before or during development, you'll need to provide:
 - [ ] Booking contact email
 - [ ] Any press quotes or reviews
 - [ ] Tech rider / stage requirements PDF (for EPK; phase 2)
-- [ ] Google Cloud project with Calendar API enabled and service account credentials
+- [ ] Public Google Calendar created for gigs, with public iCal URL captured
 
 ---
 
@@ -273,124 +273,65 @@ See [Build & Deployment](#build--deployment) for full implementation details.
 
 ## Calendar Integration
 
-The Events page is generated at build time from Will's private Google Calendar. Pay info, contact details, and other private notes never leave the calendar — only the explicitly-marked public sections are extracted.
+The Events page is generated at build time from a dedicated public Google Calendar. Only events with an explicitly-marked `public:` block in the description are rendered — everything else is filtered out.
 
-### Authentication
+### Approach
 
-**Approach:** Google Calendar API with a Google Cloud service account (read-only access).
+A separate public Google Calendar is created specifically for gigs. Its iCal feed URL is fetched at build time, parsed, and used to render the Events page.
 
-**Why this over a public iCal feed:**
-- The calendar URL is never exposed publicly
-- No risk of leaking private event data (pay, contact info, notes)
-- Will can use his existing personal/gig calendar without creating a separate "public" one
-- Access is revocable by removing the calendar share
+**Important:** Anyone with the iCal URL can subscribe to and read every event on this calendar. Therefore, **only put information you're comfortable being publicly visible on this calendar.** Pay info, private contacts, etc. should NOT go on this calendar at all.
 
-**One-time setup:**
+### One-time setup
 
-1. Create a Google Cloud project (free tier is sufficient)
-2. Enable the Google Calendar API
-3. Create a service account; download its JSON key file
-4. In Google Calendar settings, share the gigs calendar with the service account email (Read-only permission)
-5. Store the service account JSON as a GitHub Actions secret named `GOOGLE_CALENDAR_CREDENTIALS`
-6. Store the calendar ID as a secret named `GOOGLE_CALENDAR_ID`
+1. In Google Calendar, create a new calendar (e.g. "Will Wheeler — Gigs")
+2. Open the calendar's settings → **Access permissions** → check **Make available to public** (with permission set to "See all event details")
+3. Scroll to **Integrate calendar** → copy the value labeled **Public address in iCal format** (a URL ending in `/public/basic.ics`)
+4. Store that URL as a Cloudflare Pages environment variable named `GOOGLE_CALENDAR_ICAL_URL`
 
-### Event Description Format
+### Event format
 
-Events that should appear on the website include a `public:` block in the description, written as a YAML object. Anything before that block stays private to Will.
+Calendar events are rendered as-is — every event on this calendar will appear on the website. The mapping is straightforward:
+
+| Calendar field | Renders as |
+|---|---|
+| Title (SUMMARY) | Event title |
+| Start / End | Date and time range |
+| Location | Venue text |
+| Description | Public description (URLs auto-link) |
 
 **Example calendar event:**
 
 ```
-Pay: $200, split with Ben
-Contact: Sarah from the dance committee
-Sound check: 7:00pm
-Notes: stick with the new tunes from rehearsal
-
-public:
-  title: Forgery at Friday Night Contra
-  time: 8:00pm-11:00pm
-  info: https://berkeleycontradance.org
-  description: Forgery plays for the Berkeley Contra Dance.
+Title: Forgery at Friday Night Contra
+Date: Friday, May 15, 2026, 8:00 PM – 11:00 PM
+Location: Christian Church, Berkeley
+Description:
+  Forgery plays for the Berkeley Contra Dance.
+  Tickets at the door, $15 sliding scale.
+  More info: https://berkeleycontradance.org
 ```
 
-The website would render only:
+The website renders:
 
-> **May 15, 2026 — 8:00pm–11:00pm**
+> **Fri, May 15, 2026** — 8:00 PM–11:00 PM
 > **Forgery at Friday Night Contra**
 > Christian Church, Berkeley
 > Forgery plays for the Berkeley Contra Dance.
-> [More info](https://berkeleycontradance.org)
+> Tickets at the door, $15 sliding scale.
+> More info: https://berkeleycontradance.org *(auto-linked)*
 
-### YAML Schema
+Line breaks in the description are preserved on the rendered page. URLs in the description are automatically converted to clickable links.
 
-| Field | Required | Description |
-|---|---|---|
-| `title` | yes | Public event title (overrides the calendar event's title) |
-| `time` | no | Display-friendly time string (e.g. `8:00pm-11:00pm`); allows the actual calendar event to include sound check / travel buffer |
-| `info` | no | URL for tickets or more information |
-| `description` | no | Short public description of the event |
+### Build-time Parsing
 
-The event's date and location come from the standard Google Calendar fields (DTSTART, LOCATION). If `time` is provided in the YAML, it overrides what's shown for time on the site; otherwise the calendar's start/end times are used.
-
-### Build-time Parsing (Sketch)
-
-```javascript
-import { google } from 'googleapis';
-import yaml from 'js-yaml';
-
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_CALENDAR_CREDENTIALS),
-  scopes: ['https://www.googleapis.com/auth/calendar.readonly'],
-});
-
-const calendar = google.calendar({ version: 'v3', auth });
-
-export async function getPublicEvents() {
-  const res = await calendar.events.list({
-    calendarId: process.env.GOOGLE_CALENDAR_ID,
-    timeMin: new Date().toISOString(),
-    maxResults: 250,
-    singleEvents: true,
-    orderBy: 'startTime',
-  });
-
-  return res.data.items
-    .map(parsePublicEvent)
-    .filter(Boolean);
-}
-
-function parsePublicEvent(event) {
-  const description = event.description || '';
-  const idx = description.indexOf('public:');
-  if (idx === -1) return null;
-
-  let publicData;
-  try {
-    const parsed = yaml.load(description.substring(idx));
-    publicData = parsed?.public;
-  } catch (e) {
-    console.warn(`Failed to parse YAML for event "${event.summary}":`, e.message);
-    return null;
-  }
-  if (!publicData) return null;
-
-  return {
-    title: publicData.title,
-    time: publicData.time,
-    info: publicData.info,
-    description: publicData.description,
-    location: event.location,
-    start: event.start.dateTime || event.start.date,
-    end: event.end.dateTime || event.end.date,
-  };
-}
-```
+See `src/lib/calendar.ts` for the implementation. It uses the [`node-ical`](https://www.npmjs.com/package/node-ical) library to fetch and parse the iCal feed and renders each upcoming event directly.
 
 ### Operational Notes
 
 - **What happens on a parse error?** The build logs a warning and skips that event rather than failing the whole build. Will should periodically check build logs for warnings.
-- **Past events:** The query filters to upcoming events only. A "Past Events" archive could query the same calendar with `timeMax` set to today.
-- **Caching:** Astro fetches once per build; no runtime API calls.
+- **Past events:** The fetcher filters to upcoming events only at build time.
+- **Caching:** The iCal feed is fetched once per build; no runtime fetches.
+- **Public visibility:** Every event on this calendar (title, time, location, description) appears on the public website. Don't put anything on this calendar that you don't want publicly visible — use a separate calendar for private notes (pay, contacts, etc.).
 
 ---
 

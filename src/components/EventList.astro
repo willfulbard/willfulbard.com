@@ -1,5 +1,6 @@
 ---
 import type { PublicEvent } from '~/lib/calendar';
+import { getCollection } from 'astro:content';
 
 interface Props {
   events: PublicEvent[];
@@ -8,14 +9,52 @@ interface Props {
 
 const { events, emptyMessage = 'No upcoming events. Check back soon.' } = Astro.props;
 
+const projects = await getCollection('projects');
+const projectsBySlug = new Map(projects.map((p) => [p.slug, p.data.name]));
+
+// Render all event dates and times in Pacific so the rendered output is
+// stable regardless of where the build runs (local vs Cloudflare's UTC).
+const DISPLAY_TZ = 'America/Los_Angeles';
+
 function formatDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString('en-US', {
+  return new Date(iso).toLocaleDateString('en-US', {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
     year: 'numeric',
+    timeZone: DISPLAY_TZ,
   });
+}
+
+function formatTimeRange(startIso: string, endIso: string) {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  // All-day events come through with the same start/end or as date-only — skip the time display
+  if (start.getTime() === end.getTime()) return null;
+  const opts: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: DISPLAY_TZ,
+  };
+  return `${start.toLocaleTimeString('en-US', opts)}–${end.toLocaleTimeString('en-US', opts)}`;
+}
+
+const URL_REGEX = /(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/g;
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function renderDescription(text: string) {
+  return escapeHtml(text).replace(
+    URL_REGEX,
+    (url) => `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`
+  );
 }
 ---
 
@@ -24,22 +63,31 @@ function formatDate(iso: string) {
     <p class="empty-state">{emptyMessage}</p>
   ) : (
     <ul class="event-list">
-      {events.map((event) => (
-        <li class="event-row">
-          <div class="event-date">{formatDate(event.start)}</div>
-          <div class="event-body">
-            <h3 class="event-title">{event.title}</h3>
-            {event.time && <p class="event-time">{event.time}</p>}
-            {event.location && <p class="event-location">{event.location}</p>}
-            {event.description && <p class="event-description">{event.description}</p>}
-            {event.info && (
-              <a href={event.info} class="event-info-link" target="_blank" rel="noopener noreferrer">
-                More info →
-              </a>
-            )}
-          </div>
-        </li>
-      ))}
+      {events.map((event) => {
+        const timeRange = formatTimeRange(event.start, event.end);
+        const projectName = event.projectSlug ? projectsBySlug.get(event.projectSlug) : undefined;
+        return (
+          <li class="event-row">
+            <div class="event-date">{formatDate(event.start)}</div>
+            <div class="event-body">
+              <h3 class="event-title">{event.title}</h3>
+              {timeRange && <p class="event-time">{timeRange}</p>}
+              {event.location && <p class="event-location">{event.location}</p>}
+              {event.description && (
+                <div
+                  class:list={['event-description', { 'event-description-html': event.descriptionIsHtml }]}
+                  set:html={event.descriptionIsHtml ? event.description : renderDescription(event.description)}
+                />
+              )}
+              {projectName && event.projectSlug && (
+                <p class="event-project">
+                  <a href={`/projects/${event.projectSlug}/`}>More about {projectName} →</a>
+                </p>
+              )}
+            </div>
+          </li>
+        );
+      })}
     </ul>
   )
 }
@@ -91,10 +139,24 @@ function formatDate(iso: string) {
   }
 
   .event-description {
-    margin: var(--space-2) 0 var(--space-2) 0;
+    margin: var(--space-2) 0 0 0;
+    white-space: pre-line;
   }
 
-  .event-info-link {
+  .event-description-html {
+    white-space: normal;
+  }
+
+  .event-description-html :global(p) {
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  .event-description-html :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .event-project {
+    margin: var(--space-2) 0 0 0;
     font-size: 0.95rem;
   }
 

@@ -42,33 +42,15 @@ The dev server runs at `http://localhost:4321`.
 
 ## Calendar integration
 
-Events are pulled from a private Google Calendar at build time. See [SPEC.md](SPEC.md#calendar-integration) for the full setup.
+Events are pulled from a dedicated public Google Calendar at build time. The iCal feed URL is hardcoded in `src/lib/calendar.ts` (see [SPEC.md](SPEC.md#calendar-integration) for context).
 
-To run with real events locally:
+**Important:** The calendar is publicly readable. Use it exclusively for public-facing gigs — private notes (pay, contacts, etc.) belong on a different calendar.
 
-```bash
-export GOOGLE_CALENDAR_CREDENTIALS="$(cat path/to/service-account.json)"
-export GOOGLE_CALENDAR_ID="your-calendar-id@group.calendar.google.com"
-npm run dev
-```
+### Adding events
 
-Without these env vars, the events page will render an empty state.
+Just add events to the calendar normally. Title, date/time, location, and description all render as-is on the events page. URLs in the description are auto-linked.
 
-### Adding a public event
-
-In your calendar event description, include a `public:` YAML block:
-
-```
-[private notes here]
-
-public:
-  title: Forgery at Friday Night Contra
-  time: 8:00pm-11:00pm
-  info: https://berkeleycontradance.org
-  description: Forgery plays for the Berkeley Contra Dance.
-```
-
-Only events with a `public:` block appear on the site. Date and location come from the calendar event's standard fields.
+Every event on the calendar appears on the site, so use this calendar exclusively for public-facing gigs.
 
 ## Deployment
 
@@ -83,4 +65,4 @@ The built site is force-pushed to the `deploy` branch as an orphan branch. The s
 
 - [ ] Replace temporary hero photo at `public/images/hero_alt.jpg` with a better landscape-oriented shot
 - [ ] Add project photos and refine descriptions in `src/content/projects/`
-- [ ] Configure Google Calendar service account
+- [ ] Add upcoming gigs to the public Google Calendar (URL hardcoded in `src/lib/calendar.ts`)

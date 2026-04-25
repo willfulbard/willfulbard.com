@@ -21,15 +21,10 @@ Outstanding items for willfulbard.com.
 ## Operational setup
 
 ### Google Calendar integration
-- [ ] Create Google Cloud project (free tier is fine)
-- [ ] Enable the Google Calendar API in that project
-- [ ] Create a service account; download its JSON key
-- [ ] Designate or create a Google Calendar for gigs
-- [ ] Share the calendar with the service account email (read-only)
-- [ ] Add the calendar ID as GitHub Secret `GOOGLE_CALENDAR_ID`
-- [ ] Add the JSON key contents as GitHub Secret `GOOGLE_CALENDAR_CREDENTIALS`
-- [ ] Convert at least one upcoming gig to use the `public:` YAML block format (see SPEC.md → Calendar Integration)
-- [ ] Trigger a manual workflow run to verify events render
+- ✅ Public calendar created and URL hardcoded in `src/lib/calendar.ts`
+- [ ] Add upcoming gigs to the calendar
+- [ ] Trigger a manual rebuild to verify events render
+- [ ] Important: every event on this calendar appears publicly on the site — keep private notes (pay, contact, etc.) on a separate calendar
 
 ### Hosting
 Choose one path:
