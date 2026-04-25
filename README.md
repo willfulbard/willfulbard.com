@@ -4,6 +4,8 @@ Source code for [willfulbard.com](https://willfulbard.com), the website of music
 
 Built with [Astro](https://astro.build).
 
+**Live preview (GitHub Pages):** https://willfulbard.github.io/willfulbard.com/
+
 ## Local development
 
 ```bash
