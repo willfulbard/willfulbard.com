@@ -8,10 +8,10 @@ const sorted = projects.sort((a, b) => a.data.order - b.data.order);
 ---
 
 <BaseLayout title="Projects">
-  <section class="container section">
+  <section class="container section projects-page">
     <h1>Projects</h1>
     <p class="lede">
-      Will plays in many ensembles, primarily for contra dances and Irish ceilis.
+    Will plays in many ensembles, primarily for contra dances and Irish dancing.
     </p>
     <div class="project-grid">
       {sorted.map((project) => <ProjectCard project={project} />)}
@@ -20,11 +20,17 @@ const sorted = projects.sort((a, b) => a.data.order - b.data.order);
 </BaseLayout>
 
 <style>
-  .lede {
+  p.lede {
     font-size: 1.1rem;
     color: var(--color-text-muted);
     margin-bottom: var(--space-5);
     max-width: var(--content-width);
+
+    padding: 0 var(--space-3);
+  }
+
+  h1 {
+    padding: 0 var(--space-3);
   }
 
   .project-grid {

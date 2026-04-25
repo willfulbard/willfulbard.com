@@ -2,7 +2,7 @@
 name: The Flagstones
 slug: the-flagstones
 style: Contra dance
-ensemble: Quartet
+ensemble: Trio
 order: 4
 featured: false
 members:
@@ -12,7 +12,7 @@ members:
     instruments: [accordion]
   - name: Will Wheeler
     instruments: [guitar, feet]
-hero: # TODO: add photo
+hero: /images/projects/the-flagstones.jpg
 links:
   # bandcamp:
   # website:

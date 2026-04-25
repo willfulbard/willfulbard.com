@@ -15,7 +15,7 @@ members:
   - name: Dorsey Crocker
     instruments: [bass]
     note: Occasional fourth member
-hero: # TODO: add photo
+hero: /images/projects/dance-dinos.jpg
 links:
   # bandcamp:
   # website:

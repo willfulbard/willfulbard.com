@@ -20,14 +20,24 @@ const { name, style, ensemble, members, hero, links } = project.data;
 ---
 
 <BaseLayout title={name}>
-  <article class="container section project-page">
-    <header class="project-header">
+  <section class:list={['project-cover', { 'project-cover-empty': !hero }]}>
+    {
+      hero && (
+        <div
+          class="project-cover-image"
+          style={`background-image: url(${hero})`}
+          aria-hidden="true"
+        />
+      )
+    }
+    <div class="project-cover-overlay"></div>
+    <div class="container project-cover-content">
       <p class="project-meta">{style} · {ensemble}</p>
       <h1>{name}</h1>
-    </header>
+    </div>
+  </section>
 
-    {hero && <img src={hero} alt={name} class="project-hero" />}
-
+  <article class="container section project-page">
     <div class="project-grid">
       <div class="project-content">
         <Content />
@@ -94,23 +104,84 @@ const { name, style, ensemble, members, hero, links } = project.data;
 </BaseLayout>
 
 <style>
-  .project-header {
-    margin-bottom: var(--space-5);
+  .project-page {
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .project-cover {
+    position: relative;
+    width: 100%;
+    height: 60vh;
+    min-height: 400px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    margin-top: calc(-1 * var(--space-3));
+  }
+
+  .project-cover-empty {
+    height: auto;
+    min-height: 0;
+    background: var(--color-bg-alt);
+    padding: var(--space-7) 0 var(--space-6);
+  }
+
+  .project-cover-image {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center 25%;
+    background-color: var(--color-bg-alt);
+  }
+
+  .project-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(45, 42, 38, 0) 0%,
+      rgba(45, 42, 38, 0.15) 50%,
+      rgba(45, 42, 38, 0.8) 100%
+    );
+  }
+
+  .project-cover-empty .project-cover-overlay {
+    display: none;
+  }
+
+  .project-cover-content {
+    position: relative;
+    z-index: 1;
+    color: var(--color-bg);
+    padding-bottom: var(--space-6);
+  }
+
+  .project-cover-empty .project-cover-content {
+    color: var(--color-text);
+    padding-bottom: 0;
+  }
+
+  .project-cover-content h1 {
+    color: inherit;
+    font-size: clamp(2.25rem, 5vw, 3.5rem);
+    margin: 0;
+  }
+
+  .project-cover-empty .project-cover-content h1 {
+    color: var(--color-text);
   }
 
   .project-meta {
-    color: var(--color-text-muted);
+    color: rgba(250, 248, 243, 0.85);
     font-size: 0.95rem;
     margin-bottom: var(--space-2);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
-  .project-hero {
-    width: 100%;
-    max-height: 480px;
-    object-fit: cover;
-    margin-bottom: var(--space-5);
+  .project-cover-empty .project-meta {
+    color: var(--color-text-muted);
   }
 
   .project-grid {

@@ -1,7 +1,7 @@
 ---
 name: Yellowfoot
 slug: yellowfoot
-style: Irish ceili
+style: Irish
 ensemble: Duo
 order: 6
 featured: false
@@ -16,6 +16,6 @@ links:
   # website:
 ---
 
-Yellowfoot is an Irish ceili duo featuring Mahati Chintapalli (fiddle) and Will Wheeler (guitar), playing primarily for Irish set dancing.
+Yellowfoot is an Irish music duo featuring Mahati Chintapalli (fiddle) and Will Wheeler (guitar), playing primarily for Irish set dancing.
 
 <!-- TODO: refine description, add photos and recordings -->

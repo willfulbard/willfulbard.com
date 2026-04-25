@@ -15,21 +15,15 @@ const upcomingEvents = events.slice(0, 5);
 ---
 
 <BaseLayout title="Will Wheeler">
-  <section class="hero">
-    <div class="container hero-inner">
-      <div class="hero-text">
-        <h1>Will Wheeler</h1>
-        <p class="tagline">Living music from old roots</p>
-        <div class="hero-ctas">
-          <a href="/about/" class="button">About Will</a>
-          <a href="/events/" class="button button-primary">Upcoming Shows</a>
-        </div>
-      </div>
-      <div class="hero-image-wrapper">
-        <!-- TODO: replace with actual hero photo -->
-        <div class="hero-image-placeholder" aria-hidden="true">
-          <span>Hero photo</span>
-        </div>
+  <section class="hero-cover">
+    <div class="hero-cover-image" aria-hidden="true"></div>
+    <div class="hero-cover-overlay"></div>
+    <div class="container hero-cover-content">
+      <h1>Will Wheeler</h1>
+      <p class="tagline">Living music from old roots</p>
+      <div class="hero-ctas">
+        <a href="/about/" class="button">About Will</a>
+        <a href="/events/" class="button button-primary">Upcoming Shows</a>
       </div>
     </div>
   </section>
@@ -75,33 +69,57 @@ const upcomingEvents = events.slice(0, 5);
 </BaseLayout>
 
 <style>
-  .hero {
-    padding: var(--space-7) 0 var(--space-6);
+  .hero-cover {
+    position: relative;
+    width: 100%;
+    height: 85vh;
+    min-height: 560px;
+    display: flex;
+    align-items: flex-end;
+    overflow: hidden;
+    margin-top: calc(-1 * var(--space-3));
   }
 
-  .hero-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-6);
-    align-items: center;
+  .hero-cover-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('/images/hero_alt.jpg');
+    background-size: cover;
+    background-position: center 20%;
+    background-color: var(--color-bg-alt);
   }
 
-  @media (max-width: 768px) {
-    .hero-inner {
-      grid-template-columns: 1fr;
-    }
+  .hero-cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(45, 42, 38, 0) 0%,
+      rgba(45, 42, 38, 0.1) 50%,
+      rgba(45, 42, 38, 0.85) 100%
+    );
   }
 
-  .hero-text h1 {
+  .hero-cover-content {
+    position: relative;
+    z-index: 1;
+    color: var(--color-bg);
+    padding-bottom: var(--space-7);
+  }
+
+  .hero-cover-content h1 {
+    color: var(--color-bg);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
     margin-bottom: var(--space-3);
   }
 
   .tagline {
     font-family: var(--font-heading);
     font-style: italic;
-    font-size: 1.4rem;
-    color: var(--color-text-muted);
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: rgba(250, 248, 243, 0.92);
     margin-bottom: var(--space-5);
+    max-width: none;
   }
 
   .hero-ctas {
@@ -110,15 +128,25 @@ const upcomingEvents = events.slice(0, 5);
     flex-wrap: wrap;
   }
 
-  .hero-image-placeholder {
-    aspect-ratio: 4 / 5;
+  .hero-ctas :global(.button) {
+    border-color: var(--color-bg);
+    color: var(--color-bg);
+  }
+
+  .hero-ctas :global(.button:hover) {
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  .hero-ctas :global(.button-primary) {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-color: var(--color-bg);
+  }
+
+  .hero-ctas :global(.button-primary:hover) {
     background: var(--color-bg-alt);
-    border: 1px solid var(--color-border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-text-muted);
-    font-style: italic;
+    color: var(--color-text);
   }
 
   .about-teaser .lede {

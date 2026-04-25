@@ -81,6 +81,6 @@ The built site is force-pushed to the `deploy` branch as an orphan branch. The s
 
 ## TODO
 
-- [ ] Replace hero photo placeholder in `src/pages/index.astro`
+- [ ] Replace temporary hero photo at `public/images/hero_alt.jpg` with a better landscape-oriented shot
 - [ ] Add project photos and refine descriptions in `src/content/projects/`
 - [ ] Configure Google Calendar service account

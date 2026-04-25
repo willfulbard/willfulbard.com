@@ -7,7 +7,7 @@ const events = await getUpcomingEvents();
 ---
 
 <BaseLayout title="Events">
-  <section class="container section">
+  <section class="container section events-page">
     <h1>Upcoming Events</h1>
     <p class="lede">
       Where to catch Will and his projects on the dance floor and beyond.
@@ -17,6 +17,11 @@ const events = await getUpcomingEvents();
 </BaseLayout>
 
 <style>
+  .events-page {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
   .lede {
     font-size: 1.1rem;
     color: var(--color-text-muted);

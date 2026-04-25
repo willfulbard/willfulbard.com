@@ -8,7 +8,7 @@ const THANK_YOU_URL = new URL('/contact/thank-you/', baseUrl).toString();
 ---
 
 <BaseLayout title="Contact">
-  <section class="container section">
+  <section class="container section contact-page">
     <h1>Get In Touch</h1>
     <p class="lede">
       For booking inquiries, please include the date, venue, event type, and location.
@@ -46,6 +46,11 @@ const THANK_YOU_URL = new URL('/contact/thank-you/', baseUrl).toString();
 </BaseLayout>
 
 <style>
+  .contact-page {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+  }
+
   .lede {
     font-size: 1.1rem;
     color: var(--color-text-muted);

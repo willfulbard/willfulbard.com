@@ -5,7 +5,7 @@ Outstanding items for willfulbard.com.
 ## Content
 
 ### Hero & photos
-- [ ] Replace placeholder hero photo on home page (currently `<div class="hero-image-placeholder">` in `src/pages/index.astro`)
+- [ ] Replace temporary hero photo (currently `public/images/hero_alt.jpg`) with a better landscape-oriented photo when available
 - [ ] Add project photos for each of the 7 projects (set the `hero` field in each `src/content/projects/*.md`)
 - [ ] Collect photographer credits for any photos used
 
@@ -32,15 +32,28 @@ Outstanding items for willfulbard.com.
 - [ ] Trigger a manual workflow run to verify events render
 
 ### Hosting
+Choose one path:
+
+**Path A — Self-hosted**
 - [ ] Choose self-hosted environment (VPS, home server, etc.)
 - [ ] Configure server to pull from the `deploy` branch (cron-based git fetch every 5 minutes recommended)
 - [ ] Configure DNS A/AAAA records for `willfulbard.com` and `www.willfulbard.com` to point to the server
 - [ ] Set up TLS — Caddy is simplest (auto-provisions Let's Encrypt certs); nginx + certbot also fine
 - [ ] Verify site loads correctly at https://willfulbard.com/
 
+**Path B — Cloudflare Pages**
+- [ ] Sign up at [pages.cloudflare.com](https://pages.cloudflare.com) (free)
+- [ ] Connect GitHub account, select `willfulbard.com` repo
+- [ ] Set build command: `npm run build`, output directory: `dist`
+- [ ] Add environment variables (`GOOGLE_CALENDAR_CREDENTIALS` and `GOOGLE_CALENDAR_ID`) once Calendar is set up
+- [ ] Verify auto-deploy works on push to `main`
+- [ ] Configure custom domain `willfulbard.com` in Cloudflare Pages settings
+- [ ] Update DNS to Cloudflare nameservers (or add CNAME records if using a different registrar)
+
 ### GitHub Pages preview (optional)
 - [ ] Decide: leave the GH Pages URL (https://willfulbard.github.io/willfulbard.com/) as build-verification only, or fix the base path so it works as a true preview
   - Note: paths break on GH Pages because the site is configured for root `/`, not `/willfulbard.com/`
+  - Cloudflare Pages would solve this automatically (it serves at root)
 
 ## Design refinement (lower priority)
 
