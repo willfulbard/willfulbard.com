@@ -1,0 +1,66 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { name, style, ensemble, hero } = project.data;
+---
+
+<a href={`/projects/${project.slug}/`} class="project-card">
+  {
+    hero ? (
+      <img src={hero} alt={name} class="project-card-image" />
+    ) : (
+      <div class="project-card-image-placeholder" aria-hidden="true" />
+    )
+  }
+  <div class="project-card-body">
+    <h3 class="project-card-name">{name}</h3>
+    <p class="project-card-meta">
+      {style} · {ensemble}
+    </p>
+  </div>
+</a>
+
+<style>
+  .project-card {
+    display: block;
+    text-decoration: none;
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .project-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 42, 38, 0.08);
+  }
+
+  .project-card-image,
+  .project-card-image-placeholder {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--color-bg-alt);
+  }
+
+  .project-card-body {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .project-card-name {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    margin: 0 0 var(--space-1) 0;
+  }
+
+  .project-card-meta {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+</style>

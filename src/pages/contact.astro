@@ -1,0 +1,100 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+
+const FORM_ENDPOINT = 'https://formsubmit.co/cc3a3fac228cc8390c3a889ea9ed3f4d';
+// Use dev server origin during `astro dev`, production site URL during `astro build`.
+const baseUrl = import.meta.env.DEV ? Astro.url.origin : Astro.site;
+const THANK_YOU_URL = new URL('/contact/thank-you/', baseUrl).toString();
+---
+
+<BaseLayout title="Contact">
+  <section class="container section">
+    <h1>Get In Touch</h1>
+    <p class="lede">
+      For booking inquiries, please include the date, venue, event type, and location.
+    </p>
+
+    <form class="contact-form" action={FORM_ENDPOINT} method="POST">
+      {/* Set value="true" to re-enable FormSubmit's CAPTCHA if spam becomes an issue */}
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_next" value={THANK_YOU_URL} />
+      <input type="text" name="_honey" style="display:none" />
+
+      <div class="form-row">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+
+      <div class="form-row">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-row">
+        <label for="subject">Subject</label>
+        <input type="text" id="subject" name="_subject" required />
+      </div>
+
+      <div class="form-row">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+      </div>
+
+      <button type="submit" class="button button-primary">Send Message</button>
+    </form>
+  </section>
+</BaseLayout>
+
+<style>
+  .lede {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+    max-width: var(--content-width);
+  }
+
+  .contact-form {
+    max-width: 520px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .form-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  input,
+  textarea {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    padding: var(--space-2) var(--space-3);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    border-radius: 2px;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  button[type='submit'] {
+    align-self: flex-start;
+    margin-top: var(--space-2);
+  }
+</style>

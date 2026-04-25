@@ -1,0 +1,25 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import EventList from '~/components/EventList.astro';
+import { getUpcomingEvents } from '~/lib/calendar';
+
+const events = await getUpcomingEvents();
+---
+
+<BaseLayout title="Events">
+  <section class="container section">
+    <h1>Upcoming Events</h1>
+    <p class="lede">
+      Where to catch Will and his projects on the dance floor and beyond.
+    </p>
+    <EventList events={events} />
+  </section>
+</BaseLayout>
+
+<style>
+  .lede {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+  }
+</style>

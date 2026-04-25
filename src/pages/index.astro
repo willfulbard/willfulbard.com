@@ -1,0 +1,136 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import ProjectCard from '~/components/ProjectCard.astro';
+import EventList from '~/components/EventList.astro';
+import { getCollection } from 'astro:content';
+import { getUpcomingEvents } from '~/lib/calendar';
+
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+
+const events = await getUpcomingEvents();
+const upcomingEvents = events.slice(0, 5);
+---
+
+<BaseLayout title="Will Wheeler">
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-text">
+        <h1>Will Wheeler</h1>
+        <p class="tagline">Living music from old roots</p>
+        <div class="hero-ctas">
+          <a href="/about/" class="button">About Will</a>
+          <a href="/events/" class="button button-primary">Upcoming Shows</a>
+        </div>
+      </div>
+      <div class="hero-image-wrapper">
+        <!-- TODO: replace with actual hero photo -->
+        <div class="hero-image-placeholder" aria-hidden="true">
+          <span>Hero photo</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section about-teaser">
+    <div class="container">
+      <p class="lede">
+        Will Wheeler is a guitarist, fiddler, and dancer playing traditional music from around
+        the world — Irish, Quebecoise, contra dance, and beyond — in service of the dance floor and
+        the community that gathers around it.
+      </p>
+      <p>
+        <a href="/about/">Read more →</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Upcoming Events</h2>
+      <EventList events={upcomingEvents} />
+      {events.length > 5 && (
+        <p style="margin-top: var(--space-4);">
+          <a href="/events/">All events →</a>
+        </p>
+      )}
+    </div>
+  </section>
+
+  {featuredProjects.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <h2>Featured Projects</h2>
+        <div class="project-grid">
+          {featuredProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+        <p style="margin-top: var(--space-4);">
+          <a href="/projects/">All projects →</a>
+        </p>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: var(--space-7) 0 var(--space-6);
+  }
+
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    align-items: center;
+  }
+
+  @media (max-width: 768px) {
+    .hero-inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .hero-text h1 {
+    margin-bottom: var(--space-3);
+  }
+
+  .tagline {
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--color-text-muted);
+    margin-bottom: var(--space-5);
+  }
+
+  .hero-ctas {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .hero-image-placeholder {
+    aspect-ratio: 4 / 5;
+    background: var(--color-bg-alt);
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .about-teaser .lede {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--color-text);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+  }
+</style>

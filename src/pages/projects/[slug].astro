@@ -1,0 +1,178 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+const { name, style, ensemble, members, hero, links } = project.data;
+---
+
+<BaseLayout title={name}>
+  <article class="container section project-page">
+    <header class="project-header">
+      <p class="project-meta">{style} · {ensemble}</p>
+      <h1>{name}</h1>
+    </header>
+
+    {hero && <img src={hero} alt={name} class="project-hero" />}
+
+    <div class="project-grid">
+      <div class="project-content">
+        <Content />
+
+        {
+          links && (links.bandcamp || links.spotify || links.youtube || links.website) && (
+            <section class="project-links">
+              <h2>Listen & Follow</h2>
+              <ul>
+                {links.bandcamp && (
+                  <li>
+                    <a href={links.bandcamp} target="_blank" rel="noopener noreferrer">
+                      Bandcamp
+                    </a>
+                  </li>
+                )}
+                {links.spotify && (
+                  <li>
+                    <a href={links.spotify} target="_blank" rel="noopener noreferrer">
+                      Spotify
+                    </a>
+                  </li>
+                )}
+                {links.youtube && (
+                  <li>
+                    <a href={links.youtube} target="_blank" rel="noopener noreferrer">
+                      YouTube
+                    </a>
+                  </li>
+                )}
+                {links.website && (
+                  <li>
+                    <a href={links.website} target="_blank" rel="noopener noreferrer">
+                      Website
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </section>
+          )
+        }
+      </div>
+
+      <aside class="project-sidebar">
+        <h2>Members</h2>
+        <ul class="member-list">
+          {
+            members.map((member) => (
+              <li>
+                <strong>{member.name}</strong>
+                <span class="member-instruments">{member.instruments.join(', ')}</span>
+                {member.note && <span class="member-note">{member.note}</span>}
+              </li>
+            ))
+          }
+        </ul>
+      </aside>
+    </div>
+
+    <p class="back-link">
+      <a href="/projects/">← All projects</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .project-header {
+    margin-bottom: var(--space-5);
+  }
+
+  .project-meta {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin-bottom: var(--space-2);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .project-hero {
+    width: 100%;
+    max-height: 480px;
+    object-fit: cover;
+    margin-bottom: var(--space-5);
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: var(--space-6);
+    margin-bottom: var(--space-6);
+  }
+
+  @media (max-width: 768px) {
+    .project-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .project-sidebar h2 {
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  .member-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .member-list li {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .member-list li:last-child {
+    border-bottom: none;
+  }
+
+  .member-instruments {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+
+  .member-note {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+  }
+
+  .project-links {
+    margin-top: var(--space-5);
+  }
+
+  .project-links h2 {
+    font-size: 1.2rem;
+  }
+
+  .back-link {
+    margin-top: var(--space-6);
+  }
+</style>
