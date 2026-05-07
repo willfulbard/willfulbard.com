@@ -1,6 +1,6 @@
 # Cloudflare Pages Setup
 
-Step-by-step instructions for hosting willfulbard.com on Cloudflare Pages.
+Step-by-step instructions for hosting willwheelermusic.com on Cloudflare Pages.
 
 ## Overview
 
@@ -16,8 +16,8 @@ Cloudflare Pages will:
 ## Prerequisites
 
 - A Cloudflare account (free — sign up at [dash.cloudflare.com/sign-up](https://dash.cloudflare.com/sign-up))
-- GitHub repo accessible (already done — `willfulbard/willfulbard.com`)
-- Domain `willfulbard.com` purchased somewhere (any registrar)
+- GitHub repo accessible (already done — `willfulbard/willwheelermusic.com`)
+- Domain `willwheelermusic.com` purchased somewhere (any registrar)
 
 ---
 
@@ -26,7 +26,7 @@ Cloudflare Pages will:
 1. Sign in to Cloudflare → click **Workers & Pages** in the left sidebar
 2. Click **Create** → **Pages** tab → **Connect to Git**
 3. Authorize Cloudflare to access your GitHub account (one-time step)
-4. Select the `willfulbard.com` repository
+4. Select the `willwheelermusic.com` repository
 5. Click **Begin setup**
 
 ---
@@ -37,7 +37,7 @@ On the build configuration screen, enter:
 
 | Field | Value |
 |---|---|
-| Project name | `willfulbard-com` (or whatever you like — affects the `*.pages.dev` URL) |
+| Project name | `willwheelermusic-com` (or whatever you like — affects the `*.pages.dev` URL) |
 | Production branch | `main` |
 | Framework preset | **Astro** (Cloudflare auto-detects this) |
 | Build command | `npm run build` |
@@ -66,7 +66,7 @@ Cloudflare will:
 3. Run `npm run build`
 4. Publish `dist/` to its CDN
 
-The first build typically takes 1–3 minutes. When done, you'll get a URL like `https://willfulbard-com.pages.dev`. Visit it to verify everything renders correctly — header, hero, projects, etc. Internal links should all work since the site is served at the root.
+The first build typically takes 1–3 minutes. When done, you'll get a URL like `https://willwheelermusic-com.pages.dev`. Visit it to verify everything renders correctly — header, hero, projects, etc. Internal links should all work since the site is served at the root.
 
 If the build fails, click into the failed run for full logs. The most common issues are:
 - Wrong Node version (set `NODE_VERSION=20` as above)
@@ -80,12 +80,12 @@ In the Pages project dashboard:
 
 1. Click the **Custom domains** tab
 2. Click **Set up a custom domain**
-3. Enter `willfulbard.com` → click **Continue**
+3. Enter `willwheelermusic.com` → click **Continue**
 4. Cloudflare will then walk you through one of two paths:
 
 ### Path A — Domain already on Cloudflare DNS
 
-If you've previously moved `willfulbard.com` to Cloudflare nameservers (i.e., Cloudflare manages your DNS), it's automatic. Cloudflare adds the necessary records for you. Done in seconds.
+If you've previously moved `willwheelermusic.com` to Cloudflare nameservers (i.e., Cloudflare manages your DNS), it's automatic. Cloudflare adds the necessary records for you. Done in seconds.
 
 ### Path B — Domain on another registrar/DNS provider
 
@@ -98,13 +98,13 @@ You have two choices:
 4. Cloudflare will email you when the domain is active and the site goes live
 
 **Option B2: Keep DNS where it is, use CNAME**
-1. Cloudflare will tell you to add a CNAME record like `willfulbard.com` → `willfulbard-com.pages.dev`
+1. Cloudflare will tell you to add a CNAME record like `willwheelermusic.com` → `willwheelermusic-com.pages.dev`
 2. Add that record in your registrar's DNS settings
-3. Some registrars don't allow CNAME on the apex domain (the bare `willfulbard.com`); in that case you'll need ALIAS or ANAME records, or fall back to Option B1
+3. Some registrars don't allow CNAME on the apex domain (the bare `willwheelermusic.com`); in that case you'll need ALIAS or ANAME records, or fall back to Option B1
 
 ### Add www subdomain too
 
-Repeat the process for `www.willfulbard.com` so visitors who type `www.` also reach the site. Cloudflare Pages will redirect one to the other automatically.
+Repeat the process for `www.willwheelermusic.com` so visitors who type `www.` also reach the site. Cloudflare Pages will redirect one to the other automatically.
 
 ### TLS
 
@@ -116,8 +116,8 @@ Cloudflare provisions a free Let's Encrypt or Cloudflare-issued cert automatical
 
 After DNS propagates:
 
-- Visit `https://willfulbard.com` — should load the site
-- Visit `https://www.willfulbard.com` — should redirect to non-www (or vice versa, depending on Cloudflare's auto-config)
+- Visit `https://willwheelermusic.com` — should load the site
+- Visit `https://www.willwheelermusic.com` — should redirect to non-www (or vice versa, depending on Cloudflare's auto-config)
 - Open DevTools → Network tab → verify the response headers include `cf-cache-status` and similar Cloudflare headers (confirms it's being served via Cloudflare)
 
 ---
@@ -172,7 +172,7 @@ Free tier allows 500 builds/month. Your usage will be:
 - That's ~30/month for nightly + however often you push code → well within limits
 
 ### Preview deploys
-Every push to a non-`main` branch (or pull request) gets its own preview URL like `https://abc123.willfulbard-com.pages.dev`. Useful for reviewing changes before they hit production.
+Every push to a non-`main` branch (or pull request) gets its own preview URL like `https://abc123.willwheelermusic-com.pages.dev`. Useful for reviewing changes before they hit production.
 
 ### Rolling back
 If a deploy is broken, the Pages dashboard has a **Rollback** button on any prior deploy. Reverts the live site to that build instantly.
@@ -194,7 +194,7 @@ Each deploy has a build log accessible from the Pages dashboard. Useful for debu
 **Custom domain shows "DNS error" or doesn't resolve**
 - Wait — DNS can take up to 24 hours to fully propagate
 - Check your domain's nameservers match Cloudflare's (Path A) or CNAME points to `*.pages.dev` (Path B)
-- Use `dig willfulbard.com` from the command line to verify resolution
+- Use `dig willwheelermusic.com` from the command line to verify resolution
 
 **Calendar events still not showing**
 - Trigger a manual rebuild — calendar changes don't auto-deploy until the next build
@@ -202,6 +202,6 @@ Each deploy has a build log accessible from the Pages dashboard. Useful for debu
 - Confirm there's at least one upcoming event on the calendar
 - Check the build logs for `[calendar]` warning lines indicating fetch failures
 
-**The `*.pages.dev` URL works but `willfulbard.com` doesn't**
+**The `*.pages.dev` URL works but `willwheelermusic.com` doesn't**
 - Custom domain setup hasn't completed — check the **Custom domains** tab for status
 - May need to wait for DNS propagation

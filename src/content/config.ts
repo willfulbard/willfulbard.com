@@ -25,6 +25,26 @@ const projects = defineCollection({
       })
       .nullable()
       .optional(),
+    gallery: z
+      .array(
+        z.object({
+          src: z.string(),
+          alt: z.string(),
+          credit: z.string().optional(),
+        })
+      )
+      .nullable()
+      .optional(),
+    videos: z
+      .array(
+        z.object({
+          url: z.string().url(),
+          title: z.string(),
+          thumbnail: z.string().optional(),
+        })
+      )
+      .nullable()
+      .optional(),
   }),
 });
 

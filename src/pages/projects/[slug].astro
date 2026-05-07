@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import ProjectGallery from '~/components/ProjectGallery.astro';
+import ProjectVideos from '~/components/ProjectVideos.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -16,7 +18,7 @@ interface Props {
 
 const { project } = Astro.props;
 const { Content } = await project.render();
-const { name, style, ensemble, members, hero, links } = project.data;
+const { name, style, ensemble, members, hero, links, gallery, videos } = project.data;
 ---
 
 <BaseLayout title={name}>
@@ -96,6 +98,9 @@ const { name, style, ensemble, members, hero, links } = project.data;
         </ul>
       </aside>
     </div>
+
+    {videos && videos.length > 0 && <ProjectVideos videos={videos} />}
+    {gallery && gallery.length > 0 && <ProjectGallery images={gallery} />}
 
     <p class="back-link">
       <a href="/projects/">← All projects</a>

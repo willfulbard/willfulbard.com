@@ -1,10 +1,8 @@
-# willfulbard.com
+# willwheelermusic.com
 
-Source code for [willfulbard.com](https://willfulbard.com), the website of musician Will Wheeler.
+Source code for [willwheelermusic.com](https://willwheelermusic.com), the website of musician Will Wheeler.
 
 Built with [Astro](https://astro.build).
-
-**Live preview (GitHub Pages):** https://willfulbard.github.io/willfulbard.com/
 
 ## Local development
 
@@ -38,6 +36,89 @@ The dev server runs at `http://localhost:4321`.
 ├── public/                    Static assets (favicon, images)
 └── astro.config.mjs           Astro config
 ```
+
+## Project content
+
+Each project lives in its own markdown file under `src/content/projects/`. The frontmatter is validated by the schema in `src/content/config.ts`.
+
+### Required fields
+
+```yaml
+---
+name: Forgery                 # display name
+slug: forgery                 # URL slug (must be unique; matches the filename)
+style: Contra dance           # genre / context label shown above the title
+ensemble: Duo                 # group size / format label
+order: 1                      # ordering on the projects index
+featured: true                # if true, appears in the home page "Featured projects"
+members:                      # at least one member
+  - name: Will Wheeler
+    instruments: [guitar, feet]
+    note: Optional note shown under the instruments
+---
+```
+
+### Optional fields
+
+#### `hero` — cover image
+
+Path to a hero image for the project's cover header. Falls back to a colored block if omitted.
+
+```yaml
+hero: /images/projects/forgery.jpg
+```
+
+#### `links` — streaming / web links
+
+Any combination of the four supported platforms; renders a "Listen & Follow" section.
+
+```yaml
+links:
+  bandcamp: https://forgery.bandcamp.com
+  spotify: https://open.spotify.com/artist/...
+  youtube: https://youtube.com/@forgery
+  website: https://forgery.example.com
+```
+
+#### `gallery` — image gallery
+
+Renders a responsive grid of images with optional photographer credits.
+
+```yaml
+gallery:
+  - src: /images/projects/forgery/photo1.jpg
+    alt: Forgery performing at the Forge Garden
+    credit: Photo by Sarah Martin    # optional
+  - src: /images/projects/forgery/photo2.jpg
+    alt: Forgery at the Northwest Folklife Festival
+```
+
+#### `videos` — linked videos
+
+Renders a grid of clickable video cards. YouTube thumbnails are auto-generated; Instagram requires a manual `thumbnail` path.
+
+```yaml
+videos:
+  - url: https://www.youtube.com/watch?v=abc123XYZ
+    title: Forgery — Reels at the Berkeley Contra
+    # YouTube thumbnails fetched from img.youtube.com/vi/{id}/hqdefault.jpg
+  - url: https://www.instagram.com/reel/ABC123/
+    title: Live at the Forge Garden
+    thumbnail: /images/projects/forgery/video-thumbs/ig-1.jpg
+```
+
+### Suggested file layout
+
+```
+public/images/projects/{slug}/
+  ├── hero.jpg                  (or named however the `hero:` field references)
+  ├── gallery/
+  │   └── photo1.jpg
+  └── video-thumbs/
+      └── ig-1.jpg
+```
+
+Convention only — the actual paths in frontmatter can point anywhere under `public/`.
 
 ## Calendar integration
 

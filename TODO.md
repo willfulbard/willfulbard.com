@@ -1,6 +1,6 @@
 # TODO
 
-Outstanding items for willfulbard.com.
+Outstanding items for willwheelermusic.com.
 
 ## Content
 
@@ -32,22 +32,22 @@ Choose one path:
 **Path A — Self-hosted**
 - [ ] Choose self-hosted environment (VPS, home server, etc.)
 - [ ] Configure server to pull from the `deploy` branch (cron-based git fetch every 5 minutes recommended)
-- [ ] Configure DNS A/AAAA records for `willfulbard.com` and `www.willfulbard.com` to point to the server
+- [ ] Configure DNS A/AAAA records for `willwheelermusic.com` and `www.willwheelermusic.com` to point to the server
 - [ ] Set up TLS — Caddy is simplest (auto-provisions Let's Encrypt certs); nginx + certbot also fine
-- [ ] Verify site loads correctly at https://willfulbard.com/
+- [ ] Verify site loads correctly at https://willwheelermusic.com/
 
 **Path B — Cloudflare Pages**
 - [ ] Sign up at [pages.cloudflare.com](https://pages.cloudflare.com) (free)
-- [ ] Connect GitHub account, select `willfulbard.com` repo
+- [ ] Connect GitHub account, select `willwheelermusic.com` repo
 - [ ] Set build command: `npm run build`, output directory: `dist`
 - [ ] Add environment variables (`GOOGLE_CALENDAR_CREDENTIALS` and `GOOGLE_CALENDAR_ID`) once Calendar is set up
 - [ ] Verify auto-deploy works on push to `main`
-- [ ] Configure custom domain `willfulbard.com` in Cloudflare Pages settings
+- [ ] Configure custom domain `willwheelermusic.com` in Cloudflare Pages settings
 - [ ] Update DNS to Cloudflare nameservers (or add CNAME records if using a different registrar)
 
 ### GitHub Pages preview (optional)
-- [ ] Decide: leave the GH Pages URL (https://willfulbard.github.io/willfulbard.com/) as build-verification only, or fix the base path so it works as a true preview
-  - Note: paths break on GH Pages because the site is configured for root `/`, not `/willfulbard.com/`
+- [ ] Decide: leave the GH Pages URL (https://willfulbard.github.io/willwheelermusic.com/) as build-verification only, or fix the base path so it works as a true preview
+  - Note: paths break on GH Pages because the site is configured for root `/`, not `/willwheelermusic.com/`
   - Cloudflare Pages would solve this automatically (it serves at root)
 
 ## Design refinement (lower priority)
@@ -76,7 +76,7 @@ These were decided earlier in the planning process — keeping for reference:
 - ✅ Tagline: "Living music from old roots"
 - ✅ Tech stack: Astro
 - ✅ Hosting: self-hosted, deployed via GitHub Actions to the `deploy` orphan branch
-- ✅ Domain: willfulbard.com
+- ✅ Domain: willwheelermusic.com
 - ✅ Newsletter: not doing one (Instagram for gig updates)
 - ✅ Lark Camp / Starry Plough: mentioned in About bio, no dedicated section
 - ✅ Contact form: FormSubmit with hashed endpoint

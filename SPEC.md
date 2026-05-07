@@ -241,7 +241,7 @@ Before or during development, you'll need to provide:
 ### Phase 1 — Core Site (Launch)
 - Home, About, Events, Projects, Contact
 - Mobile-responsive
-- Deployed via Cloudflare Pages on willfulbard.com
+- Deployed via Cloudflare Pages on willwheelermusic.com
 - Google Calendar integration for events
 - Basic SEO (title tags, meta descriptions, Open Graph)
 
@@ -260,8 +260,8 @@ Before or during development, you'll need to provide:
 
 ## Domain & Hosting
 
-- **Domain:** `willfulbard.com` (confirmed)
-- **Source code:** GitHub repository (`willfulbard/willfulbard.com`)
+- **Domain:** `willwheelermusic.com` (confirmed)
+- **Source code:** GitHub repository (`willfulbard/willwheelermusic.com`)
 - **Build & hosting:** Cloudflare Pages (auto-builds on push to `main`)
 - **Nightly rebuild:** Optional GitHub Actions cron triggers a Cloudflare deploy hook (so calendar changes go live without a code push)
 - **DNS:** Managed through Cloudflare (or via CNAME from your registrar)
@@ -362,7 +362,7 @@ This appears in the hero section of the homepage (beneath your name, overlaid on
 
 ## Resolved Decisions
 
-- **Domain:** willfulbard.com
+- **Domain:** willwheelermusic.com
 - **Tech stack:** Astro (self-hosted)
 - **Teaching:** Deferred to phase 3
 - **Projects page:** Phase 1, with individual pages per project

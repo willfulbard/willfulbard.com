@@ -10,8 +10,25 @@ members:
     instruments: [fiddle]
   - name: Will Wheeler
     instruments: [guitar, feet]
-hero: /images/projects/forgery.jpg
+hero: /images/projects/forgery/forgery.jpg
+gallery:
+  - src: /images/projects/forgery/gallery/Folklife-bartley.jpg
+    alt: Jamming with Dave Bartley and Claude Ginsburg
+    credit: Photo by Kelsey Hartman
+  - src: /images/projects/forgery/gallery/Folklife-busking.jpg
+    alt: Busking at NW Folklife 2025
+  - src: /images/projects/forgery/gallery/Folklife-vidstill.jpg
+    alt: Performing at NW Folklife 2025
+    credit: Photo by Doug Plummer
+videos:
+  - title: Forgery & Kelsey Hartman - Folklife 2025
+    url: https://youtu.be/Egvhit-H6X0 
+  - title: Playing Fleur de Mandragore & Gondolin, 2024
+    url: https://youtu.be/h6LQfgDWfgo
+  - title: Forgery at Circle Left, joined by Scott Jespersen, 2024
+    url: https://youtu.be/3ZVtzy2yfPg
 links:
+
   # bandcamp:
   # website:
 ---
