@@ -1,19 +1,26 @@
 ---
 name: The Starry Plough Céilí Band
 slug: starry-plough-ceili-band
-style: Irish ceili
+style: Irish céilí
 ensemble: Ensemble
 order: 7
 featured: false
 members:
   - name: Richard Page
     instruments: [whistle]
+  - name: Laurel North
+    instruments: [harp]
   - name: Will Wheeler
-    instruments: [fiddle]
+    instruments: [fiddle, guitar]
+  - name: Jason Courtney
+    instruments: [bouzouki]
+  - name: Randy Fish
+    instruments: [mandolin]
+  - name: Sean Wahl
+    instruments: [concertina]
   - name: And more...
     instruments: []
-  # TODO: confirm full lineup
-hero: # TODO: add photo
+hero: /images/projects/plough/starry-plough-ceili-band.jpg
 links:
   # bandcamp:
   website: https://thestarryplough.com/monday-ceili-irish-dance/

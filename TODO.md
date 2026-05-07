@@ -5,7 +5,6 @@ Outstanding items for willwheelermusic.com.
 ## Content
 
 ### Hero & photos
-- [ ] Replace temporary hero photo (currently `public/images/hero_alt.jpg`) with a better landscape-oriented photo when available
 - [ ] Add project photos for each of the 7 projects (set the `hero` field in each `src/content/projects/*.md`)
 - [ ] Collect photographer credits for any photos used
 

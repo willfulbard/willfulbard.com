@@ -12,7 +12,7 @@ members:
     instruments: [guitar]
 hero: # TODO: add photo
 links:
-  # bandcamp:
+  bandcamp: https://hollysternbergkozan.bandcamp.com/track/february-reel-1-the-green-cake-hulls-reel
   # website:
 ---
 

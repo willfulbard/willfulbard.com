@@ -120,6 +120,72 @@ public/images/projects/{slug}/
 
 Convention only — the actual paths in frontmatter can point anywhere under `public/`.
 
+## About page content
+
+The About page (`src/pages/about.astro`) is a regular Astro page rather than part of a content collection. The hero photo, gallery, and video links live as variables at the top of the file's script block.
+
+### Side images
+
+A vertical stack of images sits to the right of the bio text on desktop, and stacks above the text on narrow screens. Set the `sideImages` array near the top of `src/pages/about.astro`:
+
+```ts
+const sideImages = [
+  { src: '/images/hero_alt.jpg', alt: 'Will Wheeler' },
+  { src: '/images/about/will-fiddle.jpg', alt: 'Will playing fiddle at Lark Camp', credit: 'Photo by ...' },
+];
+```
+
+Each image keeps its natural aspect ratio. Add as many as you want — the first one occupies the position next to the bio's opening paragraph; the rest run down the page beside the rest of the text.
+
+### Gallery
+
+Add entries to the `galleryImages` array — same schema as project galleries:
+
+```ts
+const galleryImages = [
+  {
+    src: '/images/about/will-fiddle.jpg',
+    alt: 'Will playing fiddle at Lark Camp',
+    credit: 'Photo by Doug Plummer',     // optional
+  },
+];
+```
+
+The Gallery section only renders when the array has entries. Images are displayed in a masonry layout that preserves their natural aspect ratios; clicking opens a full-size modal.
+
+### Videos
+
+Add entries to the `videos` array — same schema as project videos:
+
+```ts
+const videos = [
+  {
+    url: 'https://www.youtube.com/watch?v=abc123XYZ',
+    title: 'Will at Lark Camp 2025',
+    // YouTube thumbnails fetched automatically
+  },
+  {
+    url: 'https://www.instagram.com/reel/ABC123/',
+    title: 'Practicing nyckelharpa',
+    thumbnail: '/images/about/video-thumbs/ig-1.jpg',  // required for Instagram
+  },
+];
+```
+
+The Videos section only renders when the array has entries.
+
+### Suggested file layout
+
+```
+public/images/about/
+  ├── gallery/
+  │   └── photo1.jpg
+  └── video-thumbs/
+      └── ig-1.jpg
+```
+
+Convention only — paths can point anywhere under `public/`.
+
 ## Calendar integration
 
 Events are pulled from a dedicated public Google Calendar at build time. The iCal feed URL is hardcoded in `src/lib/calendar.ts` (see [SPEC.md](SPEC.md#calendar-integration) for context).
@@ -138,6 +204,5 @@ Hosted on Cloudflare Pages, which auto-builds on every push to `main`. See [CLOU
 
 ## TODO
 
-- [ ] Replace temporary hero photo at `public/images/hero_alt.jpg` with a better landscape-oriented shot
 - [ ] Add project photos and refine descriptions in `src/content/projects/`
 - [ ] Add upcoming gigs to the public Google Calendar (URL hardcoded in `src/lib/calendar.ts`)

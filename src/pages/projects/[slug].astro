@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import ProjectGallery from '~/components/ProjectGallery.astro';
-import ProjectVideos from '~/components/ProjectVideos.astro';
+import Gallery from '~/components/Gallery.astro';
+import Videos from '~/components/Videos.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -99,8 +99,8 @@ const { name, style, ensemble, members, hero, links, gallery, videos } = project
       </aside>
     </div>
 
-    {videos && videos.length > 0 && <ProjectVideos videos={videos} />}
-    {gallery && gallery.length > 0 && <ProjectGallery images={gallery} />}
+    {videos && videos.length > 0 && <Videos videos={videos} />}
+    {gallery && gallery.length > 0 && <Gallery images={gallery} />}
 
     <p class="back-link">
       <a href="/projects/">← All projects</a>
